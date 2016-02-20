@@ -64,7 +64,8 @@ var helpers = {
   }
 };
 
-client.stream('user', function(stream) {
+client.stream('statuses/sample', {filter_level: 'low', language: 'ja'}, function(stream) {
+//client.stream('user', function(stream) {
   stream.on('data', function(tweet) {
     if (tweet.user) helpers.updateList(tweet);
   });
@@ -76,5 +77,5 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) {
   res.render('index');
-  helpers.loadHomeTweets();
+  //helpers.loadHomeTweets();
 });
