@@ -10,9 +10,9 @@ html, body {
   padding: 0px;
 }
 
-a { color: #00496E; }
+a { color: #00496E; text-decoration: none; font-weight: bold; }
 a:visited { color: #00496E; }
-a:hover { text-decoration: none; }
+a:hover { text-decoration: none; font-weight: bold; }
 
 .container {
   width: 100%;
