@@ -15,5 +15,6 @@ socket.on('update', function(item){
   a.innerText = item.title;
   p.appendChild(a);
 
-  document.getElementsByClassName('list')[0].appendChild(p);
+  var div = document.getElementsByClassName('list')[0];
+  div.insertBefore(p, div.firstChild);
 });
