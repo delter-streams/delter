@@ -2,10 +2,10 @@ var twitter = require('twitter');
 var request = require('request');
 
 var client = new twitter({
-  consumer_key: '',
-  consumer_secret: '',
-  access_token_key: '',
-  access_token_secret: ''
+  consumer_key: process.env.CONSUMER_KEY,
+  consumer_secret: process.env.CONSUMER_SECRET,
+  access_token_key: process.env.OAUTH_TOKEN,
+  access_token_secret: process.env.OAUTH_TOKEN_SECRET
 });
 
 function getTitleFromHtml(html) {
