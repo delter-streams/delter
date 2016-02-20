@@ -35,12 +35,20 @@ var helpers = {
     tweet.entities.urls.forEach(function(url) {
       request.get(url.expanded_url, function(error, response, body) {
         if (error || response.statusCode != 200) return;
-        io.emit('update', {
+        var item = {
           name: tweet.user.screen_name,
           icon: tweet.user.profile_image_url,
           url: url.expanded_url,
           title: helpers.getTitleFromHtml(body)
-        });
+        };
+        item.alg = 1;
+        io.emit('update', item);
+
+        item.alg = 2;
+        io.emit('update', item);
+
+        item.alg = 3;
+        io.emit('update', item);
       });
     });
   },

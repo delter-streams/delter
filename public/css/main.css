@@ -14,8 +14,21 @@ a { color: #00496E; }
 a:visited { color: #00496E; }
 a:hover { text-decoration: none; }
 
+.container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.list {
+  width: 33.333%;
+  min-height: 100%;
+  float: left;
+}
+
 .item {
-  padding: .5em;
+  padding: 5px;
+  margin: 0 1px 1px 0;
+  border: solid 1px #ccc;
 }
 
 .item img {

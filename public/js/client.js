@@ -19,6 +19,6 @@ socket.on('update', function(item){
   link.innerText = ' ' + item.title;
   p.appendChild(link);
 
-  var div = document.getElementsByClassName('list')[0];
+  var div = document.getElementsByClassName('list')[item.alg-1];
   div.insertBefore(p, div.firstChild);
 });
