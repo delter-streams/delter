@@ -1,0 +1,10 @@
+{
+  "name": "delter",
+  "version": "0.0.1",
+  "description": "Here is a confluence of your social streams.",
+  "dependencies": {
+    "request": "^2.69.0",
+    "twitter": "^1.2.5"
+  },
+  "devDependencies": {}
+}
