@@ -2,7 +2,7 @@ var socket = io();
 
 socket.on('update', function(item){
   var p = document.createElement('p');
-  p.className = 'item';
+  p.className = 'item item-'+item.alg;
 
   var img = document.createElement('img');
   img.src = item.icon;
@@ -19,6 +19,6 @@ socket.on('update', function(item){
   link.innerText = ' ' + item.title;
   p.appendChild(link);
 
-  var div = document.getElementsByClassName('list')[item.alg-1];
+  var div = document.getElementsByClassName('items')[item.alg-1];
   div.insertBefore(p, div.firstChild);
 });
