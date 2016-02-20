@@ -61,6 +61,12 @@ var helpers = {
         });
       }
     });
+  },
+
+  getTrends: function() {
+    client.get('trends/place', {id: 23424856, exclude: 'hashtags'}, function(error, res, response) {
+      if (!error) io.emit('trend', res[0].trends);
+    });
   }
 };
 
@@ -77,5 +83,6 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) {
   res.render('index');
+  helpers.getTrends();
   //helpers.loadHomeTweets();
 });

@@ -23,3 +23,21 @@ socket.on('update', function(item){
   if (div.children.length < 50) div.insertBefore(p, div.firstChild);
   else div.replaceChild(p, div.lastChild);
 });
+
+socket.on('trend', function(trends){
+  var div = document.getElementsByClassName('trends')[0];
+  div.removeChild(div.firstChild);
+
+  var ul = document.createElement('ul');
+  var cnt = 0;
+  for (var i = 0; i < trends.length; i++) {
+    if (trends[i].tweet_volume) {
+      var li = document.createElement('li');
+      li.appendChild(document.createTextNode(trends[i].name));
+      ul.appendChild(li);
+      if (++cnt == 5) break;
+    }
+  }
+
+  div.appendChild(ul);
+});
