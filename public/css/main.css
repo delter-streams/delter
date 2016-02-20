@@ -1,0 +1,28 @@
+@import url(normalize.css);
+
+html, body {
+  background: #fff;
+  height: 100%;
+  color: #333;
+  font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', Meiryo, メイリオ, Osaka, 'MS PGothic', arial, helvetica, sans-serif;
+  font-size: 14px;
+  margin: 0px;
+  padding: 0px;
+}
+
+a { color: #00496E; }
+a:visited { color: #00496E; }
+a:hover { text-decoration: none; }
+
+.item {
+  padding: .5em;
+}
+
+.item img {
+  margin-right: 1em;
+  width: 16px;
+  border-radius: 16px;
+  -webkit-border-radius: 16px;
+  -moz-border-radius: 16px;
+  vertical-align: middle;
+}
