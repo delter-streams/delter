@@ -24,39 +24,41 @@ io.on('connection', function(socket) {
   });
 });
 
-function getTitleFromHtml(html) {
-  var m = html.match(/<title[^>]*>([^<]+)<\/title>/);
-  if (m && m[1]) return m[1];
-  else return 'no title';
-}
+var helpers = {
+  getTitleFromHtml: function(html) {
+    var m = html.match(/<title[^>]*>([^<]+)<\/title>/);
+    if (m && m[1]) return m[1];
+    else return 'no title';
+  },
 
-function updateList(tweet) {
-  tweet.entities.urls.forEach(function(url) {
-    request.get(url.expanded_url, function(error, response, body) {
-      if (error || response.statusCode != 200) return;
-      io.emit('update', {
-        name: tweet.user.screen_name,
-        icon: tweet.user.profile_image_url,
-        url: url.expanded_url,
-        title: getTitleFromHtml(body)
+  updateList: function(tweet) {
+    tweet.entities.urls.forEach(function(url) {
+      request.get(url.expanded_url, function(error, response, body) {
+        if (error || response.statusCode != 200) return;
+        io.emit('update', {
+          name: tweet.user.screen_name,
+          icon: tweet.user.profile_image_url,
+          url: url.expanded_url,
+          title: helpers.getTitleFromHtml(body)
+        });
       });
     });
-  });
-}
+  },
 
-function loadHomeTweets() {
-  client.get('statuses/home_timeline', {}, function(error, tweets, response) {
-    if (!error) {
-      tweets.forEach(function(tweet) {
-        updateList(tweet);
-      });
-    }
-  });
-}
+  loadHomeTweets: function() {
+    client.get('statuses/home_timeline', {}, function(error, tweets, response) {
+      if (!error) {
+        tweets.forEach(function(tweet) {
+          helpers.updateList(tweet);
+        });
+      }
+    });
+  }
+};
 
 client.stream('user', function(stream) {
   stream.on('data', function(tweet) {
-    if (tweet.user) updateList(tweet);
+    if (tweet.user) helpers.updateList(tweet);
   });
 });
 
@@ -66,5 +68,5 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) {
   res.render('index');
-  loadHomeTweets();
+  helpers.loadHomeTweets();
 });
