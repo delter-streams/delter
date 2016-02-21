@@ -16,7 +16,7 @@ socket.on('update', function(item){
 
   var link = document.createElement('a');
   link.href = item.url;
-  link.innerText = item.title;
+  link.innerHTML = item.title;
   p.appendChild(link);
 
   var div = document.getElementsByClassName('items')[item.alg-1];
