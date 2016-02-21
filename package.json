@@ -4,6 +4,7 @@
   "description": "Here is a confluence of your social streams.",
   "dependencies": {
     "ect": "^0.5.9",
+    "encoding-japanese": "^1.0.24",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
     "passport": "^0.3.2",

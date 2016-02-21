@@ -4,6 +4,7 @@ var twitter = require('twitter');
 var request = require('request');
 var session = require('express-session');
 var passport = require('./passport').passport;
+var encoding = require('encoding-japanese');
 
 var client = new twitter({
   consumer_key: process.env.CONSUMER_KEY,
@@ -29,38 +30,33 @@ io.on('connection', function(socket) {
 var helpers = {
   getTitleFromHtml: function(html) {
     var m = html.match(/<title[^>]*>([^<]+)<\/title>/);
-    if (m && m[1]) return m[1];
+    if (m && m[1]) {
+      if (encoding.detect(m[1]) !== 'UNICODE') return encoding.convert(m[1], 'UNICODE', 'AUTO');
+      return m[1];
+    }
     else return 'no title';
   },
 
-  updateList: function(tweet) {
+  updateList: function(tweet, n_alg) {
     tweet.entities.urls.forEach(function(url) {
       request.get(url.expanded_url, function(error, response, body) {
         if (error || response.statusCode != 200) return;
-        var item = {
+        io.emit('update', {
           name: tweet.user.screen_name,
           icon: tweet.user.profile_image_url,
           url: url.expanded_url,
-          title: helpers.getTitleFromHtml(body)
-        };
-        item.alg = 1;
-        io.emit('update', item);
-
-        item.alg = 2;
-        io.emit('update', item);
-
-        item.alg = 3;
-        io.emit('update', item);
+          title: helpers.getTitleFromHtml(body),
+          alg: n_alg
+        });
       });
     });
   },
 
   loadHomeTweets: function() {
-    client.get('statuses/home_timeline', { count: 200 }, function(error, tweets, response) {
-      console.log(error);
+    client.get('statuses/home_timeline', { count: 200, exclude_replies: true }, function(error, tweets, response) {
       if (!error) {
         tweets.forEach(function(tweet) {
-          helpers.updateList(tweet);
+          helpers.updateList(tweet, 1);
         });
       }
     });
@@ -68,19 +64,30 @@ var helpers = {
 
   getTrends: function() {
     client.get('trends/place', {id: 23424856, exclude: 'hashtags'}, function(error, res, response) {
-      if (!error) io.emit('trend', res[0].trends);
-    });
-  },
-
-  connectStream: function() {
-    //client.stream('statuses/sample', {filter_level: 'low', language: 'ja'}, function(stream) {
-    client.stream('user', function(stream) {
-      stream.on('data', function(tweet) {
-        if (tweet.user) helpers.updateList(tweet);
-      });
+      if (!error) {
+        io.emit('trend', res[0].trends);
+      }
     });
   }
 };
+
+client.stream('user', function(stream) {
+  stream.on('data', function(tweet) {
+    if (tweet.user) helpers.updateList(tweet, 1);
+  });
+});
+
+client.stream('statuses/filter', {track: 'アニメ', lang: 'ja'}, function(stream) {
+  stream.on('data', function(tweet) {
+    if (tweet.user) helpers.updateList(tweet, 2);
+  });
+});
+
+client.stream('statuses/sample', {filter_level: 'low', language: 'ja'}, function(stream) {
+  stream.on('data', function(tweet) {
+    if (tweet.user) helpers.updateList(tweet, 3);
+  });
+});
 
 app.engine('ect', ect({ watch: true, root: __dirname + '/views', ext: '.ect' }).render);
 app.set('view engine', 'ect');
@@ -92,7 +99,6 @@ app.use(passport.session());
 app.get('/', function(req, res) {
   if (req.session.passport) {
     res.render('index', { session: req.session.passport });
-    helpers.connectStream();
     helpers.getTrends();
     helpers.loadHomeTweets();
   } else {

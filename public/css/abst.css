@@ -1,0 +1,28 @@
+#mainBody{
+  /*background-image: url(../images/smartphone.jpg);
+  background-size: auto;*/
+}
+
+.catch {
+  padding-top: 5%;
+}
+
+.txt{
+  text-align: center;
+}
+
+.question {
+  position: absolute;
+  top: 60%;
+  left:0;
+  width:100%;
+  /*background-color: #ffeeee;*/
+}
+
+.answer {
+  position: absolute;
+  top: 75%;
+  left:0;
+  width:100%;
+  /*background-color: #ffeeff;*/
+}

@@ -30,5 +30,24 @@
 <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
 <script src="/js/client.js"></script>
 <% else : %>
-<a href="/oauth">Twitterでログイン</a>
+  <img src="/img/Delter.png" width="128" height="128" alt="ロゴ">
+  </div>
+  <div class="catch">
+    <h1 style="font-size:300%" class="txt">知りたい情報をあなたに</h1>
+    <h2 style="font-size:250%" class="txt">情報収集アプリの決定版</h2>
+  </div>
+  <div class="btnWrapper">
+    <div class="btnArea">
+      <form method="get" action="#" class="forBtn" name = "searchBoxWord">
+        <a href="/oauth"><input type="button" value="今すぐ体験!" class="btn" onclick="tBox();"></a>
+      </form>
+    </div>
+  </div>
+  <div class = "question">
+    <h2 style="font-size:150%" class="txt">情報が多すぎる？</h2>
+    <h2 style="font-size:150%" class="txt">最適化されすぎている？</h2>
+  </div>
+  <div class = "answer">
+    <h1 style="font-size:220%" class="txt">そんなあなたに選べるAIがお答えします</h1>
+  </div>
 <% end %>
