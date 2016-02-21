@@ -2,6 +2,8 @@ var ect = require('ect');
 var express = require('express');
 var twitter = require('twitter');
 var request = require('request');
+var session = require('express-session');
+var passport = require('./passport').passport;
 
 var client = new twitter({
   consumer_key: process.env.CONSUMER_KEY,
@@ -54,7 +56,8 @@ var helpers = {
   },
 
   loadHomeTweets: function() {
-    client.get('statuses/home_timeline', {}, function(error, tweets, response) {
+    client.get('statuses/home_timeline', { count: 200 }, function(error, tweets, response) {
+      console.log(error);
       if (!error) {
         tweets.forEach(function(tweet) {
           helpers.updateList(tweet);
@@ -67,22 +70,39 @@ var helpers = {
     client.get('trends/place', {id: 23424856, exclude: 'hashtags'}, function(error, res, response) {
       if (!error) io.emit('trend', res[0].trends);
     });
+  },
+
+  connectStream: function() {
+    //client.stream('statuses/sample', {filter_level: 'low', language: 'ja'}, function(stream) {
+    client.stream('user', function(stream) {
+      stream.on('data', function(tweet) {
+        if (tweet.user) helpers.updateList(tweet);
+      });
+    });
   }
 };
-
-client.stream('statuses/sample', {filter_level: 'low', language: 'ja'}, function(stream) {
-//client.stream('user', function(stream) {
-  stream.on('data', function(tweet) {
-    if (tweet.user) helpers.updateList(tweet);
-  });
-});
 
 app.engine('ect', ect({ watch: true, root: __dirname + '/views', ext: '.ect' }).render);
 app.set('view engine', 'ect');
 app.use(express.static(__dirname + '/public'));
+app.use(session({ secret: 'delter', resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/', function(req, res) {
-  res.render('index');
-  helpers.getTrends();
-  //helpers.loadHomeTweets();
+  if (req.session.passport) {
+    res.render('index', { session: req.session.passport });
+    helpers.connectStream();
+    helpers.getTrends();
+    helpers.loadHomeTweets();
+  } else {
+    res.render('index');
+  }
 });
+
+app.get('/oauth', passport.authenticate('twitter'));
+app.get('/oauth/callback', passport.authenticate('twitter', { failureRedirect: '/' }), function(req, res) {
+  res.redirect('/');
+});
+
+
