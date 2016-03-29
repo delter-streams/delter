@@ -1,18 +1,8 @@
-div.catch{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 40%;
-  /*background-color: #cccaaa;*/
-}
-
 div.btnWrapper{
-  position: absolute;
-  top: 40%;
+  margin: 60px auto 0;
   left: 0;
-  width: 100%;
-  height: 60%;
+  height: 300px;
+  text-align: center;
   /*background-color: #aabb00;*/
 }
 
@@ -20,16 +10,12 @@ div.btnArea{
   text-align: center;
 }
 
-form.forBtn{
-  margin: 0;
-}
-
-form.forBtn input.btn{
-  padding: 5%;
-  width: 40%;
-  height: 20%;
+input.btn{
+  padding: 15px 0;
+  margin: 36px auto 0;
+  width: 375px;
   text-align: center;
-  font-size: 300%;
+  font-size: 30px;
   border: 1px solid #DDD;
   border-radius: 10px;
   -moz-border-radius: 10px;
