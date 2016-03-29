@@ -5,7 +5,7 @@ var ect = require('ect')
   , session = require('express-session')
   , passport = require('passport')
   , TwitterStrategy = require('passport-twitter').Strategy
-  , encoding = require('encoding-japanese')
+  , cheerio = require('cheerio-httpcli')
   , config = require('./config')
   ;
 
@@ -58,24 +58,17 @@ passport.use(new TwitterStrategy({
 var twitter = new Twitter(config.twitter.app);
 
 var helpers = {
-  getTitleFromHtml: function(html) {
-    var m = html.match(/<title[^>]*>([^<]+)<\/title>/);
-    if (m && m[1]) {
-      if (encoding.detect(m[1]) !== 'UNICODE') return encoding.convert(m[1], 'UNICODE', 'AUTO');
-      return m[1];
-    }
-    else return 'no title';
-  },
 
   updateList: function(tweet, n_alg) {
     tweet.entities.urls.forEach(function(url) {
-      request.get(url.expanded_url, function(error, response, body) {
-        if (error || response.statusCode != 200) return;
+      cheerio.fetch(url.expanded_url, function(err, $, res) {
+        if (res.statusCode != 200) return;
+
         io.emit('update', {
           name: tweet.user.screen_name,
           icon: tweet.user.profile_image_url,
           url: url.expanded_url,
-          title: helpers.getTitleFromHtml(body),
+          title: $('title').text(),
           alg: n_alg
         });
       });
