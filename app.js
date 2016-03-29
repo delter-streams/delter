@@ -1,21 +1,17 @@
-var ect = require('ect');
-var express = require('express');
-var twitter = require('twitter');
-var request = require('request');
-var session = require('express-session');
-var passport = require('./passport').passport;
-var encoding = require('encoding-japanese');
-
-var client = new twitter({
-  consumer_key: process.env.CONSUMER_KEY,
-  consumer_secret: process.env.CONSUMER_SECRET,
-  access_token_key: process.env.OAUTH_TOKEN,
-  access_token_secret: process.env.OAUTH_TOKEN_SECRET
-});
+var ect = require('ect')
+  , express = require('express')
+  , Twitter = require('twitter')
+  , request = require('request')
+  , session = require('express-session')
+  , passport = require('passport')
+  , TwitterStrategy = require('passport-twitter').Strategy
+  , encoding = require('encoding-japanese')
+  , config = require('./config')
+  ;
 
 var app = express();
-var server = app.listen(process.env.PORT || 8080, function() {
-  console.log('Listening on port %d', server.address().port);
+var server = app.listen(config.port, function() {
+  console.log('Listening on port %d', config.port);
 });
 
 var io = require('socket.io')(server);
@@ -26,6 +22,40 @@ io.on('connection', function(socket) {
     console.log('user disconnected');
   });
 });
+
+
+/**
+ * passport
+ */
+
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  done(null, id);
+});
+
+passport.use(new TwitterStrategy({
+    consumerKey: config.twitter.app.consumer_key,
+    consumerSecret: config.twitter.app.consumer_secret,
+    callbackURL: config.twitter.callback_url
+  },
+  function (token, tokenSecret, profile, done) {
+    profile.twitter_token = token;
+    profile.twitter_token_secret = tokenSecret;
+    process.nextTick(function () {
+      return done(null, profile);
+    });
+  }
+));
+
+
+/**
+ * tweet habdling
+ */
+
+var twitter = new Twitter(config.twitter.app);
 
 var helpers = {
   getTitleFromHtml: function(html) {
@@ -53,7 +83,7 @@ var helpers = {
   },
 
   loadHomeTweets: function() {
-    client.get('statuses/user_timeline', { count: 200, exclude_replies: true }, function(error, tweets, response) {
+    twitter.get('statuses/user_timeline', { count: 200, exclude_replies: true }, function(error, tweets, response) {
       if (!error) {
         tweets.forEach(function(tweet) {
           helpers.updateList(tweet, 1);
@@ -63,7 +93,7 @@ var helpers = {
   },
 
   getTrends: function() {
-    client.get('trends/place', {id: 23424856, exclude: 'hashtags'}, function(error, res, response) {
+    twitter.get('trends/place', {id: 23424856, exclude: 'hashtags'}, function(error, res, response) {
       if (!error) {
         io.emit('trend', res[0].trends);
       }
@@ -71,24 +101,42 @@ var helpers = {
   }
 };
 
-client.stream('statuses/filter', {track: 'アニメ', lang: 'ja'}, function(stream) {
+// interest-based filtering
+twitter.stream('statuses/filter', {track: 'アニメ', lang: 'ja'}, function(stream) {
   stream.on('data', function(tweet) {
     if (tweet.user) helpers.updateList(tweet, 2);
   });
 });
 
-client.stream('statuses/sample', {filter_level: 'low', language: 'ja'}, function(stream) {
+// trend-based filtering
+twitter.stream('statuses/sample', {filter_level: 'low', language: 'ja'}, function(stream) {
   stream.on('data', function(tweet) {
     if (tweet.user) helpers.updateList(tweet, 3);
   });
 });
 
+
+/**
+ * configuration
+ */
+
 app.engine('ect', ect({ watch: true, root: __dirname + '/views', ext: '.ect' }).render);
 app.set('view engine', 'ect');
 app.use(express.static(__dirname + '/public'));
-app.use(session({ secret: 'delter', resave: false, saveUninitialized: false }));
+app.use(session({ secret: config.name, resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+/**
+ * routes
+ */
+
+app.get(config.twitter.route.auth, passport.authenticate('twitter'));
+app.get(config.twitter.route.callback, passport.authenticate('twitter', {
+  successRedirect: '/',
+  failureRedirect: '/'
+}));
 
 app.get('/', function(req, res) {
   if (req.session.passport) {
@@ -99,14 +147,3 @@ app.get('/', function(req, res) {
     res.render('index');
   }
 });
-
-
-/**
- * Routes
- */
-
-app.get('/auth/twitter', passport.authenticate('twitter'));
-app.get('/auth/twitter/callback', passport.authenticate('twitter', {
-  successRedirect: '/',
-  failureRedirect: '/'
-}));
