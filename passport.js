@@ -12,9 +12,11 @@ passport.deserializeUser(function(id, done) {
 passport.use(new TwitterStrategy({
     consumerKey: process.env.CONSUMER_KEY,
     consumerSecret: process.env.CONSUMER_SECRET,
-    callbackURL: 'http://localhost:' + (process.env.PORT || 8080) + '/oauth/callback'
+    callbackURL: 'http://localhost:' + (process.env.PORT || 8080) + '/auth/twitter/callback'
   },
   function (token, tokenSecret, profile, done) {
+    profile.twitter_token = token;
+    profile.twitter_token_secret = tokenSecret;
     process.nextTick(function () {
       return done(null, profile);
     });

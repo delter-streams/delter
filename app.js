@@ -53,7 +53,7 @@ var helpers = {
   },
 
   loadHomeTweets: function() {
-    client.get('statuses/home_timeline', { count: 200, exclude_replies: true }, function(error, tweets, response) {
+    client.get('statuses/user_timeline', { count: 200, exclude_replies: true }, function(error, tweets, response) {
       if (!error) {
         tweets.forEach(function(tweet) {
           helpers.updateList(tweet, 1);
@@ -70,12 +70,6 @@ var helpers = {
     });
   }
 };
-
-client.stream('user', function(stream) {
-  stream.on('data', function(tweet) {
-    if (tweet.user) helpers.updateList(tweet, 1);
-  });
-});
 
 client.stream('statuses/filter', {track: 'アニメ', lang: 'ja'}, function(stream) {
   stream.on('data', function(tweet) {
@@ -106,9 +100,13 @@ app.get('/', function(req, res) {
   }
 });
 
-app.get('/oauth', passport.authenticate('twitter'));
-app.get('/oauth/callback', passport.authenticate('twitter', { failureRedirect: '/' }), function(req, res) {
-  res.redirect('/');
-});
 
+/**
+ * Routes
+ */
 
+app.get('/auth/twitter', passport.authenticate('twitter'));
+app.get('/auth/twitter/callback', passport.authenticate('twitter', {
+  successRedirect: '/',
+  failureRedirect: '/'
+}));
