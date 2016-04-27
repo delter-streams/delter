@@ -10,12 +10,9 @@ config = module.exports = {
       access_token_key: process.env.TW_OAUTH_TOKEN,
       access_token_secret: process.env.TW_OAUTH_TOKEN_SECRET
     },
-    route: {
-      auth: '/auth/twitter',
-      callback: '/auth/twitter/callback'
-    }
+    callback: '/api/auth/twitter/callback'
   }
 };
 
-var callback_url = 'http://' + config.host + ':' + config.port + config.twitter.route.callback;
+var callback_url = 'http://' + config.host + ':' + config.port + config.twitter.callback;
 config.twitter.callback_url = callback_url;
