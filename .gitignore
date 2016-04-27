@@ -2,3 +2,5 @@ node_modules/
 npm-debug.log
 .envrc
 *.swp
+
+client/public/browser-bundle.min.js
