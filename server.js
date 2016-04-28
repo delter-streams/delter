@@ -104,17 +104,19 @@ passport.use(new TwitterStrategy({
         access_token_secret: tokenSecret
       });
       if(!req.user) { // confirm that user not loggedin
-        User.findOne({ 'twitter.id': profile.id }, function (err, user) {
+        User.findOne({ 'social.twitter.id': profile.id }, function (err, user) {
           if (err) return done(err);
           if (user) {
             return done(null, user);
           } else {
             var newUser = new User({
-              twitter: {
-                id: profile.id,
-                token: token,
-                username: profile.username,
-                image_url: profile.photos[0].value || ''
+              social: {
+                twitter: {
+                  id: profile.id,
+                  token: token,
+                  username: profile.username,
+                  image_url: profile.photos[0].value || ''
+                }
               }
             });
             newUser.save(function (err) {
@@ -188,7 +190,7 @@ var controllers = {
     all: function (req, res) {
       if (req.user) {
         twitter.get('statuses/home_timeline', {
-          count: 10, exclude_replies: true
+          count: 200, exclude_replies: true
         }, function (error, tweets, response) {
           if (error) {
             console.log(error);
@@ -203,6 +205,12 @@ var controllers = {
     }
   },
 
+  utils: {
+    isAuthenticated: function (req, res) {
+      res.send({ is_authenticated: req.isAuthenticated() });
+    }
+  }
+
 };
 
 
@@ -210,20 +218,16 @@ var controllers = {
  * routes
  */
 
-var isLoggedInReturnEmpty = function (req, res, next) {
-  if (req.isAuthenticated()) return next();
-  return res.send({ rows: [] });
-};
-
-var isLoggedInRedirect = function (req, res, next) {
-  if (req.isAuthenticated()) return res.status(302).redirect('/');
-  return next();
+var isLoggedIn = function (req, res, next) {
+  if (!req.isAuthenticated()) return next();
+  return res.status(302).redirect('/');
 };
 
 app.get('/api', controllers.base.index);
-app.get('/api/entries', isLoggedInReturnEmpty, controllers.entries.all);
-app.get('/api/auth/twitter', isLoggedInRedirect, passport.authenticate('twitter'));
+app.get('/api/entries', controllers.entries.all);
+app.get('/api/auth/twitter', isLoggedIn, passport.authenticate('twitter'));
 app.get(config.twitter.callback, passport.authenticate('twitter', {
   successRedirect: '/',
   failureRedirect: '/'
 }));
+app.get('/api/is_authenticated', controllers.utils.isAuthenticated);

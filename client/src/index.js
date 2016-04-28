@@ -1,12 +1,7 @@
 var
   request = require('superagent'),
   slug = require('slug'),
-  React = require('react'),
-  AppBar = require('material-ui/lib/app-bar'),
-  LeftNav = require('material-ui/lib/left-nav'),
-  Slider = require('material-ui/lib/slider'),
-  FlatButton = require('material-ui/lib/flat-button');
-
+  React = require('react');
 
 // helpers to request the server API
 var data = {
@@ -21,32 +16,24 @@ var data = {
       });
   },
 
-}
-
-var styles = {
-  leftNav: {
-    zIndex: 100,
-    top: 60,
-    padding: 20
+  getIsAuthenticated: function (callback) {
+    request
+      .get('/api/is_authenticated')
+      .set('Accept', 'application/json')
+      .end(function (err, res) {
+        callback(err, res.body);
+      });
   },
-  entryList: {
-    marginLeft: 200
-  }
-};
+
+}
 
 // Main component of the application
 var App = React.createClass({
   render: function () {
     return (
       <div>
-      <AppBar
-        title="delter"
-        showMenuIconButton={false}
-        iconElementRight={<FlatButton label="Twitter" linkButton={true} href="/api/auth/twitter" />}
-      />
-      {/*<LeftNav style={styles.leftNav}>
-        <Slider step={0.10} value={.5}/>
-      </LeftNav>*/}
+      <h1>delter</h1>
+      <a href="/api/auth/twitter">twitter</a>
       <EntryList entries={this.props.entries}></EntryList>
       </div>
     )
@@ -77,7 +64,7 @@ var EntryList = React.createClass({
 
     // Full render
     return (
-      <div style={styles.entryList}>
+      <div>
         {entries}
       </div>
     );
@@ -92,14 +79,10 @@ var Entry = React.createClass({
   render: function () {
     return (
       <div>
-        <p class="title">
-          <a href={this.props.url}>{this.props.title}</a>
-        </p>
-        <p class="user">
-          <a href={this.props.user.home_url}>
-            <img src={this.props.user.image_url} alt="profile_image" />
-          </a>
-        </p>
+        <a href={this.props.user.home_url}>
+          <img src={this.props.user.image_url} alt="profile_image" class="profile-image" />
+        </a>
+        <a href={this.props.url}>{this.props.title}</a>
       </div>
     );
   }
@@ -108,7 +91,15 @@ var Entry = React.createClass({
 
 // Start the application
 // First we load the entries, then we give the result to React so it can render our app
-data.getEntries(function (err, entries) {
-  React.render(<App entries={entries.rows}></App>,
-               document.getElementById('app'));
+data.getIsAuthenticated(function (err, res) {
+  if (res.is_authenticated) {
+    data.getEntries(function (err, entries) {
+      React.render(<App entries={entries.rows}></App>,
+                   document.getElementById('app'));
+    });
+  } else {
+    // not logged in -> return empty entry list
+    React.render(<App entries={[]}></App>,
+                 document.getElementById('app'));
+  }
 });
