@@ -207,7 +207,17 @@ var controllers = {
 
   utils: {
     isAuthenticated: function (req, res) {
-      res.send({ is_authenticated: req.isAuthenticated() });
+      if (req.isAuthenticated()) {
+        res.send({
+          is_authenticated: true,
+          user: req.user
+        });
+      } else {
+        res.send({
+          is_authenticated: false,
+          user: {}
+        });
+      }
     }
   }
 

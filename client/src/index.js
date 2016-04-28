@@ -33,9 +33,20 @@ var App = React.createClass({
     return (
       <div>
       <h1>delter</h1>
-      <a href="/api/auth/twitter">twitter</a>
+      <TwitterIcon user={this.props.user}></TwitterIcon>
       <EntryList entries={this.props.entries}></EntryList>
       </div>
+    )
+  }
+});
+
+// Twitter link component
+var TwitterIcon = React.createClass({
+  render: function () {
+    return (
+      <a href={this.props.user.twitter.link_url}>
+        {this.props.user.twitter.title}
+      </a>
     )
   }
 });
@@ -93,13 +104,25 @@ var Entry = React.createClass({
 // First we load the entries, then we give the result to React so it can render our app
 data.getIsAuthenticated(function (err, res) {
   if (res.is_authenticated) {
+    var user = {
+      twitter: {
+        link_url: "http://twitter.com/" + res.user.social.twitter.username,
+        title: res.user.social.twitter.username
+      }
+    };
     data.getEntries(function (err, entries) {
-      React.render(<App entries={entries.rows}></App>,
+      React.render(<App entries={entries.rows} user={user}></App>,
                    document.getElementById('app'));
     });
   } else {
     // not logged in -> return empty entry list
-    React.render(<App entries={[]}></App>,
+    var user = {
+      twitter: {
+        link_url: "/api/auth/twitter",
+        title: "Twitter"
+      }
+    };
+    React.render(<App entries={[]} user={user}></App>,
                  document.getElementById('app'));
   }
 });
