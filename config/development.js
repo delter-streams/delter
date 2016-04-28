@@ -2,6 +2,7 @@ config = module.exports = {
   name: 'delter',
   host: 'localhost',
   port: (process.env.PORT || 8080),
+  db: 'mongodb://localhost/delter',
 
   twitter: {
     app: {
@@ -16,3 +17,4 @@ config = module.exports = {
 
 var callback_url = 'http://' + config.host + ':' + config.port + config.twitter.callback;
 config.twitter.callback_url = callback_url;
+

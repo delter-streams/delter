@@ -25,6 +25,7 @@ var App = React.createClass({
     return (
       <div>
       <h1>Delter</h1>
+      <a href="/api/auth/twitter">Twitter</a>
       <EntryList entries={this.props.entries}></EntryList>
       </div>
     )
