@@ -12,9 +12,9 @@ var UserSchema = mongoose.Schema({
     }
   },
   params: {
-    friend: { type: Number, default: 1.0 },
-    interest: { type: Number, default: 1.0 },
-    trend: {type: Number, default: 1.0}
+    friend: { type: Number, default: 0.5 },
+    interest: { type: Number, default: 0.5 },
+    trend: {type: Number, default: 0.5 }
   },
   keywords: [String]
 });
