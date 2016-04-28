@@ -1,6 +1,11 @@
-var React = require('react');
-var request = require('superagent');
-var slug = require('slug');
+var
+  request = require('superagent'),
+  slug = require('slug'),
+  React = require('react'),
+  AppBar = require('material-ui/lib/app-bar'),
+  LeftNav = require('material-ui/lib/left-nav'),
+  Slider = require('material-ui/lib/slider'),
+  FlatButton = require('material-ui/lib/flat-button');
 
 
 // helpers to request the server API
@@ -18,14 +23,30 @@ var data = {
 
 }
 
+var styles = {
+  leftNav: {
+    zIndex: 100,
+    top: 60,
+    padding: 20
+  },
+  entryList: {
+    marginLeft: 200
+  }
+};
 
 // Main component of the application
 var App = React.createClass({
   render: function () {
     return (
       <div>
-      <h1>Delter</h1>
-      <a href="/api/auth/twitter">Twitter</a>
+      <AppBar
+        title="delter"
+        showMenuIconButton={false}
+        iconElementRight={<FlatButton label="Twitter" linkButton={true} href="/api/auth/twitter" />}
+      />
+      {/*<LeftNav style={styles.leftNav}>
+        <Slider step={0.10} value={.5}/>
+      </LeftNav>*/}
       <EntryList entries={this.props.entries}></EntryList>
       </div>
     )
@@ -56,7 +77,7 @@ var EntryList = React.createClass({
 
     // Full render
     return (
-      <div>
+      <div style={styles.entryList}>
         {entries}
       </div>
     );

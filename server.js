@@ -190,7 +190,6 @@ var controllers = {
         twitter.get('statuses/home_timeline', {
           count: 10, exclude_replies: true
         }, function (error, tweets, response) {
-          console.log(tweets);
           if (error) {
             console.log(error);
             res.status(500).send({ msg: error });
