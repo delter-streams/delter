@@ -121,7 +121,7 @@ passport.use(new TwitterStrategy({
             });
             newUser.save(function (err) {
               if (err) return done(err);
-              return done(null, user);
+              return done(null, newUser);
             });
           }
         });
