@@ -1,0 +1,137 @@
+html{
+  height: 1000px;
+}
+
+body {
+  background: #f8f5f4;
+  /*backgraund: #f8f5f4;*/
+  height: 1000px;
+}
+
+#wrapper{
+  position: relative;
+  height:1000px;
+  width:100%;
+}
+
+#popup{
+  text-align: center;
+  /*-webkit-transform: translateX(-360px);
+  transform: translateX(-360px);*/
+}
+
+.mdl-layout__drawer{
+  width: 240px;
+  -webkit-transform: translateX(-250px);
+  transform: translateX(-250px);
+}
+
+.textfield{
+  margin: auto;
+}
+
+#loading{
+  /*display: none;*/
+  position: fixed;
+  top: 0;
+	right: -50px;
+	bottom: -50px;
+	left: 0;
+	margin: auto;
+  width: 100px;
+  height: 100px;
+  z-index: 100;
+}
+
+#loadingCircle{
+
+}
+
+#sliderTag{
+  margin-top: 60px;
+  margin-bottom: 0;
+}
+
+button img{
+  height: 48px;
+}
+
+.mainBtn{
+  height: 48px;
+  margin-top: 5px;
+}
+
+#twitter{
+  background: none;
+  border: none;
+}
+
+.demo-card-wide.mdl-card {
+  width: 100%;
+  margin:0px auto;
+  background: none;
+}
+
+#welcome_card{
+  width: 95%;
+  min-width: 300px;
+  background: #fff;
+  height: 176px;
+  margin: 3px auto;
+  padding: 0px;
+  border: 1px #000 solid;
+}
+
+/*.page-content{
+  width: 90%;
+  clear: left;
+  text-align: center;
+}*/
+
+#tweets{
+  width: 95%;
+  min-width: 300px;
+  background: #fff;
+  height: 176px;
+  margin: 3px auto 0px;
+  border: 1px #000 solid;
+  padding: 0px;
+  word-break: break-all;
+}
+
+h2{
+  font-size: 2rem;
+}
+
+h6{
+  font-size: 1rem;
+}
+
+#icon{
+  height: 72px;
+}
+
+/*for PC*/
+@media all and (min-width: 768px){
+  .mdl-layout__drawer{
+    width: 360px;
+    -webkit-transform: translateX(-370px);
+    transform: translateX(-370px);
+  }
+}
+
+@media all and (min-width: 1025px){
+  .page-content{
+    -webkit-transform: translateX(360px);
+    transform: translateX(360px);
+    width: calc(100% - 360px);
+  }
+  h2{
+    font-size: 3rem;
+  }
+
+  h6{
+    font-size: 1.66667rem;
+  }
+
+}

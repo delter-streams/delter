@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial=1.0">
+  <title>Delter</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssreset/cssreset-min.css">
+  <script type="text/javascript" src="plugins/jquery-2.1.4.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.light_blue-light_green.min.css">
+  <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+
+  <link rel="stylesheet" href="css/main.css">
+
+  <script type="text/javascript" src="js/overlay.js"></script>
+  <script type="text/javascript" src="js/windowResized.js"></script>
+</head>
+
+<body>
+  <div id="wrapper">
+    <div class="demo-layout">
+      <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
+                  mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+          <div class="mdl-layout__header-row">
+            <div class="mdl-layout-spacer"></div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+                        mdl-textfield--floating-label mdl-textfield--align-right">
+              <div class="mdl-textfield__expandable-holder">
+                <input class="mdl-textfield__input" type="text" name="sample"
+                       id="fixed-header-drawer-exp" />
+              </div>
+            </div>
+          </div>
+        </header>
+        <div class="mdl-layout__drawer" id="popup">
+          <span class="mdl-layout-title">メニュー</span>
+          <nav class="mdl-navigation">
+            <!-- <button type="button" id="facebook"
+                    class="mainBtn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+              <img src="images/facebook.png"><p>ログイン</p>
+            </button>
+            <button type="button" id="hatena"
+                    class="mainBtn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+              <img src="images/hatena.svg"><p>ログイン</p>
+            </button>
+            <button type="button" id="twitter"
+                    class="mainBtn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+              <img src="images/twitter.png"><p>ログイン</p>
+            </button> -->
+              <button type="button" id="twitter"
+                      class="mainBtn">
+                <img src="images/twitter.png">
+              </button>
+              <br>
+              <br>
+              <p id="sliderTag">フォローユーザーからの情報</p>
+              <input class="mdl-slider mdl-js-slider" type="range"  min="0" max="100" value="0" tabindex="0"/>
+              <p id="sliderTag">トレンドからの情報</p>
+              <input class="mdl-slider mdl-js-slider" type="range"  min="0" max="100" value="0" tabindex="0"/>
+              <p id="sliderTag">興味あるカテゴリからの情報</p>
+              <input class="mdl-slider mdl-js-slider" type="range"  min="0" max="100" value="0" tabindex="0"/>
+              <div class="mdl-textfield mdl-js-textfield textfield">
+                <input class="mdl-textfield__input" type="text" id="sample1" />
+                <label class="mdl-textfield__label" for="sample1">興味のあるカテゴリ</label>
+              </div>
+            </nav>
+          </div>
+          <!-- <main class="mdl-layout__content mdl-shadow--2dp"> -->
+          <main class="mdl-card demo-card-wide">
+            <div class="page-content">
+              <div class="mdl-shadow--2dp " id="welcome_card">
+                <h2>Welcome to Delter!</h2>
+                <h6>メニューからアカウントにログインしてください</h6>
+                <!-- <div class="mdl-card__title">
+                  <h2 class="mdl-card__title-text">Welcome to Delter!</h2>
+                </div>
+
+                <div class="mdl-card__supporting-text">
+                  メニューからアカウントにログインしてください
+                </div> -->
+              </div>
+              <div class="mdl-shadow--2dp" id="tweets">
+                <img id="icon" alt="icon image"
+                src="https://pbs.twimg.com/profile_images/717259359814754304/0Sb2mpYV.jpg">
+                <h6>ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ</h6>
+
+              </div>
+
+              <div class="mdl-shadow--2dp" id="tweets">
+                <img id="icon" alt="icon image"
+                src="https://pbs.twimg.com/profile_images/717259359814754304/0Sb2mpYV.jpg">
+                <h6>ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ</h6>
+
+              </div>
+            </div>
+
+          </main>
+        </div>
+      </div>
+    </div>
+    <div id="loading">
+      <div id="loadingCircle" class="mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active"></div>
+    </div>
+</body>
+</html>
