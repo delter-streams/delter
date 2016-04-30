@@ -20,6 +20,10 @@
     "start": "node_modules/.bin/watchify src/index.js -o ./public/browser-bundle.js -v -d .",
     "build": "NODE_ENV=production browserify . | uglifyjs -cm > ./public/browser-bundle.min.js"
   },
+  "engines": {
+    "node": "v6.0.0",
+    "npm": "3.8.9"
+  },
   "author": "takuti",
   "license": "MIT",
   "browserify": {

@@ -4,7 +4,12 @@
   "description": "Here is a confluence of your social streams.",
   "main": "server.js",
   "scripts": {
-    "build": "cd client && npm run-script build"
+    "build": "cd client && npm run-script build",
+    "start": "npm run-script build && node server.js"
+  },
+  "engines": {
+    "node": "v6.0.0",
+    "npm": "3.8.9"
   },
   "dependencies": {
     "async": "^2.0.0-rc.3",
