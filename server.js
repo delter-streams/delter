@@ -241,7 +241,7 @@ var controllers = {
     all: function (req, res) {
       if (req.user) {
         twitter.get('statuses/home_timeline', {
-          count: 200, exclude_replies: true
+          count: 100, exclude_replies: true
         }, function (error, tweets, response) {
           if (error) {
             console.log(error);

@@ -6,14 +6,15 @@
   <title>Delter</title>
   <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssreset/cssreset-min.css">
   <script type="text/javascript" src="plugins/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src=plugins/jquery.xdomainajax.js></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.light_blue-light_green.min.css">
   <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
 
   <link rel="stylesheet" href="css/main.css">
 
-  <script type="text/javascript" src="js/overlay.js"></script>
-  <script type="text/javascript" src="js/windowResized.js"></script>
+  <script type="text/javascript" src="js/dataIn.js"></script>
+  <script type="text/javascript" src="js/twitterLogin.js"></script>
 </head>
 
 <body>
@@ -48,22 +49,26 @@
                     class="mainBtn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
               <img src="images/twitter.png"><p>ログイン</p>
             </button> -->
-              <button type="button" id="twitter"
-                      class="mainBtn">
-                <img src="images/twitter.png">
-              </button>
+              <!-- <form action="#" method="get"> -->
+                <button type="button" id="twitter"
+                        class="mainBtn">
+                  <img src="images/twitter.png">
+                </button>
+              <!-- </form> -->
               <br>
               <br>
-              <p id="sliderTag">フォローユーザーからの情報</p>
-              <input class="mdl-slider mdl-js-slider" type="range"  min="0" max="100" value="0" tabindex="0"/>
-              <p id="sliderTag">トレンドからの情報</p>
-              <input class="mdl-slider mdl-js-slider" type="range"  min="0" max="100" value="0" tabindex="0"/>
-              <p id="sliderTag">興味あるカテゴリからの情報</p>
-              <input class="mdl-slider mdl-js-slider" type="range"  min="0" max="100" value="0" tabindex="0"/>
-              <div class="mdl-textfield mdl-js-textfield textfield">
-                <input class="mdl-textfield__input" type="text" id="sample1" />
-                <label class="mdl-textfield__label" for="sample1">興味のあるカテゴリ</label>
-              </div>
+              <form action="#" method="POST">
+                <p id="sliderTag">フォローユーザーからの情報</p>
+                <input class="mdl-slider mdl-js-slider" type="range"  min="0" max="10" value="5" tabindex="0"/>
+                <p id="sliderTag">トレンドからの情報</p>
+                <input class="mdl-slider mdl-js-slider" type="range"  min="0" max="10" value="5" tabindex="0"/>
+                <p id="sliderTag">興味あるカテゴリからの情報</p>
+                <input class="mdl-slider mdl-js-slider" type="range"  min="0" max="10" value="5" tabindex="0"/>
+                <div class="mdl-textfield mdl-js-textfield textfield">
+                  <input class="mdl-textfield__input" type="text" id="sample1" />
+                  <label class="mdl-textfield__label" for="sample1">興味のあるカテゴリ</label>
+                </div>
+              </form>
             </nav>
           </div>
           <!-- <main class="mdl-layout__content mdl-shadow--2dp"> -->
@@ -71,7 +76,7 @@
             <div class="page-content">
               <div class="mdl-shadow--2dp " id="welcome_card">
                 <h2>Welcome to Delter!</h2>
-                <h6>メニューからアカウントにログインしてください</h6>
+                <h5>メニューからアカウントにログインしてください</h5>
                 <!-- <div class="mdl-card__title">
                   <h2 class="mdl-card__title-text">Welcome to Delter!</h2>
                 </div>
@@ -80,17 +85,20 @@
                   メニューからアカウントにログインしてください
                 </div> -->
               </div>
-              <div class="mdl-shadow--2dp" id="tweets">
+              <div class="mdl-shadow--2dp tweets">
                 <img id="icon" alt="icon image"
                 src="https://pbs.twimg.com/profile_images/717259359814754304/0Sb2mpYV.jpg">
-                <h6>ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ</h6>
+                <p class="username">ツタンラーメン</p>
+                <h6>tech lab paakまじ快適杉ワロタwwwwwwwwwwwwwwww</h6>
 
               </div>
 
-              <div class="mdl-shadow--2dp" id="tweets">
+              <div class="mdl-shadow--2dp tweets">
                 <img id="icon" alt="icon image"
                 src="https://pbs.twimg.com/profile_images/717259359814754304/0Sb2mpYV.jpg">
-                <h6>ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ</h6>
+                <p class="username">ハム太郎</p>
+                <h6>新しく牛肉の天然水が出るらしい。</h6>
+                <h6>https://www.google.co.jp/search?q=%E7%89%9B%E8%82%89%E3%81%AE%E5%A4%A9%E7%84%B6%E6%B0%B4&ie=utf-8&oe=utf-8&hl=ja</h6>
 
               </div>
             </div>

@@ -3,6 +3,33 @@ var
   slug = require('slug'),
   React = require('react');
 
+var styles = {
+  Entry: [
+    {
+      width: '100%',
+      padding: 0,
+      margin: 0,
+      border: 'solid 1px #C7243A',
+      background: 'rgba(199, 36, 58, .1)'
+    },
+    {
+      width: '100%',
+      padding: 0,
+      margin: 0,
+      border: 'solid 1px #369',
+      background: 'rgba(51, 102, 153, .1)'
+    },
+    {
+      width: '100%',
+      padding: 0,
+      margin: 0,
+      border: 'solid 1px #E9A321',
+      background: 'rgba(233, 163, 33, .1)'
+    }
+  ]
+}
+
+
 // helpers to request the server API
 var data = {
 
@@ -32,7 +59,6 @@ var App = React.createClass({
   render: function () {
     return (
       <div>
-      <h1>delter</h1>
       <TwitterIcon user={this.props.user}></TwitterIcon>
       <EntryList entries={this.props.entries}></EntryList>
       </div>
@@ -75,7 +101,7 @@ var EntryList = React.createClass({
 
     // Full render
     return (
-      <div>
+      <div class="entries">
         {entries}
       </div>
     );
@@ -88,17 +114,17 @@ var Entry = React.createClass({
 
   // Rendering of the component via a JSX template
   render: function () {
+    var rand = Math.floor(Math.random() * 3);
     return (
-      <div>
+      <div style={styles.Entry[rand]}>
         <a href={this.props.user.home_url}>
-          <img src={this.props.user.image_url} alt="profile_image" class="profile-image" />
+          <img src={this.props.user.image_url} alt="profile_image" style={{ width: '1em', marginRight: '1em' }} />
         </a>
         <a href={this.props.url}>{this.props.title}</a>
       </div>
     );
   }
 });
-
 
 // Start the application
 // First we load the entries, then we give the result to React so it can render our app

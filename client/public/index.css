@@ -1,12 +1,15 @@
-html {
-  font-family: 'Roboto', sans-serif;
+@import url(normalize.css);
+
+html, body {
+  background: #fff;
+  height: 100%;
+  color: #333;
+  font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', Meiryo, メイリオ, Osaka, 'MS PGothic', arial, helvetica, sans-serif;
+  font-size: 14px;
+  margin: 0px;
+  padding: 0px;
 }
 
-body {
-  font-size: 13px;
-  line-height: 20px;
-}
-
-.profile-image {
-  width: 13px;
-}
+a { color: #00496E; text-decoration: none; }
+a:visited { color: #00496E; }
+a:hover { text-decoration: none; }
