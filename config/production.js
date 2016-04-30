@@ -15,6 +15,6 @@ config = module.exports = {
   }
 };
 
-var callback_url = 'http://' + config.host + ':' + config.port + config.twitter.callback;
+var callback_url = 'https://delter.herokuapp.com' + config.twitter.callback;
 config.twitter.callback_url = callback_url;
 
