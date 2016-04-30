@@ -143,6 +143,32 @@ passport.use(new TwitterStrategy({
 
 var helpers = {
 
+  classifyURL: function (url) {
+    var result = {
+      url: url,
+      type: 'article',
+      is_noise: false
+    };
+
+    var noiseList = ['buzztter.com', 'swarmapp.com', '4sq.com', 'instagram.com', 'amazon.co.jp'];
+    for (var domain of noiseList) {
+      if (url.indexOf(domain) > -1) {
+        result.is_noise = true;
+        break;
+      }
+    }
+
+    var nonArticleList = ['nicovideo.jp', 'youtube.com'];
+    for (var domain of nonArticleList) {
+      if (url.indexOf(domain) > -1) {
+        result.type = 'movie';
+        break;
+      }
+    }
+
+    return result;
+  },
+
   parseTweets: function (tweets, callback) {
     var results = {
       rows: []
@@ -156,6 +182,14 @@ var helpers = {
       }
 
       var url = tweet.entities.urls[0];
+
+      // ignore noise/non-article urls
+      var result = helpers.classifyURL(url.expanded_url);
+      if (result.is_noise || result.type != 'article') {
+        cb();
+        return;
+      }
+
       cheerio.fetch(url.expanded_url).then(function (result) {
         if (result.response.statusCode != 200) return;
 
@@ -198,33 +232,8 @@ var controllers = {
     },
 
     classifier: function (req, res) {
-      if (!('url' in req.query)) {
-        res.status(400).send({ msg: 'You must give `url` parameter' });
-      } else {
-        var result = {
-          url: req.query.url,
-          type: 'article',
-          is_noise: false
-        };
-
-        var noiseList = ['buzztter.com', 'swarmapp.com', '4sq.com', 'instagram.com', 'amazon.co.jp'];
-        for (var domain of noiseList) {
-          if (req.query.url.indexOf(domain) > -1) {
-            result.is_noise = true;
-            break;
-          }
-        }
-
-        var nonArticleList = ['nicovideo.jp', 'youtube.com'];
-        for (var domain of nonArticleList) {
-          if (req.query.url.indexOf(domain) > -1) {
-            result.type = 'movie';
-            break;
-          }
-        }
-
-        res.send(result);
-      }
+      if (!('url' in req.query)) res.status(400).send({ msg: 'You must give `url` parameter' });
+      else res.send(helpers.classifyURL(req.query.url));
     }
   },
 
