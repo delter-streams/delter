@@ -195,6 +195,36 @@ var controllers = {
         }
         res.send(result[0].trends.map(function (trend) { return trend.name }));
       });
+    },
+
+    classifier: function (req, res) {
+      if (!('url' in req.query)) {
+        res.status(400).send({ msg: 'You must give `url` parameter' });
+      } else {
+        var result = {
+          url: req.query.url,
+          type: 'article',
+          is_noise: false
+        };
+
+        var noiseList = ['buzztter.com', 'swarmapp.com', '4sq.com', 'instagram.com', 'amazon.co.jp'];
+        for (var domain of noiseList) {
+          if (req.query.url.indexOf(domain) > -1) {
+            result.is_noise = true;
+            break;
+          }
+        }
+
+        var nonArticleList = ['nicovideo.jp', 'youtube.com'];
+        for (var domain of nonArticleList) {
+          if (req.query.url.indexOf(domain) > -1) {
+            result.type = 'movie';
+            break;
+          }
+        }
+
+        res.send(result);
+      }
     }
   },
 
@@ -248,6 +278,7 @@ var isLoggedIn = function (req, res, next) {
 // general
 app.get('/api', controllers.base.index);
 app.get('/api/trend', controllers.base.trend);
+app.get('/api/classifier', controllers.base.classifier);
 
 // app-related
 app.get('/api/entries', controllers.entries.all);
