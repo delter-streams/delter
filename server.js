@@ -87,7 +87,7 @@ passport.deserializeUser(function (id, done) {
   });
 });
 
-var twitter;
+var twitter = null;
 passport.use(new TwitterStrategy({
     consumerKey: config.twitter.app.consumer_key,
     consumerSecret: config.twitter.app.consumer_secret,
@@ -183,6 +183,18 @@ var controllers = {
   base: {
     index: function (req, res) {
       res.send('My Entries API');
+    },
+
+    trend: function (req, res) {
+      if (!twitter) twitter = new Twitter(config.twitter.app);
+
+      twitter.get('trends/place', {id: 23424856, exclude: 'hashtags'}, function(error, result, response) {
+        if (error) {
+          console.log(error);
+          res.status(500).send({ msg: 'Cannot load trend terms' });
+        }
+        res.send(result[0].trends.map(function (trend) { return trend.name }));
+      });
     }
   },
 
@@ -233,7 +245,11 @@ var isLoggedIn = function (req, res, next) {
   return res.status(302).redirect('/');
 };
 
+// general
 app.get('/api', controllers.base.index);
+app.get('/api/trend', controllers.base.trend);
+
+// app-related
 app.get('/api/entries', controllers.entries.all);
 app.get('/api/auth/twitter', isLoggedIn, passport.authenticate('twitter'));
 app.get(config.twitter.callback, passport.authenticate('twitter', {
