@@ -49,7 +49,7 @@ app.use(morgan('dev'));
  */
 
 mongoose.connect(config.db);
-db = mongoose.connection;
+var db = mongoose.connection;
 db.on('error', function (err) {
   console.error('There was a db connection error');
   return console.error(err.message);
@@ -66,7 +66,7 @@ process.on('SIGINT', function () {
     return process.exit(0);
   });
 });
-sessionStore = new mongoStore({
+var sessionStore = new mongoStore({
   mongooseConnection: db,
   touchAfter: 24 * 3600
 });
