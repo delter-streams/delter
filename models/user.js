@@ -1,8 +1,6 @@
-'use strict';
-
 import mongoose from 'mongoose';
 
-const UserSchema = mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   username: String,
   email: String,
   social: {
@@ -10,15 +8,15 @@ const UserSchema = mongoose.Schema({
       id: String,
       token: String,
       username: String,
-      image_url: String
-    }
+      image_url: String,
+    },
   },
   params: {
     friend: { type: Number, default: 0.5 },
     interest: { type: Number, default: 0.5 },
-    trend: {type: Number, default: 0.5 }
+    trend: { type: Number, default: 0.5 },
   },
-  keywords: [String]
+  keywords: [String],
 });
 
 export default mongoose.model('User', UserSchema);
