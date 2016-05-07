@@ -1,27 +1,30 @@
-var
-  path = require('path'),
-  express = require('express'),
-  Twitter = require('twitter'),
-  session = require('express-session'),
-  mongoStore = require('connect-mongo')(session),
-  passport = require('passport'),
-  TwitterStrategy = require('passport-twitter').Strategy,
-  config = require('./config/config'),
-  bodyParser = require('body-parser'),
-  morgan = require('morgan'),
-  methodOverride = require('method-override'),
-  cheerio = require('cheerio-httpcli'),
-  async = require('async'),
-  mongoose = require('mongoose'),
-  User = require('./models/user');
+'use strict';
 
+import 'babel-polyfill';
+import path from 'path';
+import express from 'express';
+import Twitter from 'twitter';
+import session from 'express-session';
+import MongoConnector from 'connect-mongo';
+import passport from 'passport';
+import { Strategy as TwitterStrategy } from 'passport-twitter';
+import config from './config/config';
+import bodyParser from 'body-parser';
+import morgan from 'morgan';
+import methodOverride from 'method-override';
+import cheerio from 'cheerio-httpcli';
+import async from 'async';
+import mongoose from 'mongoose';
+import User from './models/user';
+
+const mongoStore = MongoConnector(session);
 
 /**
  * server
  */
 
-var app = express();
-var server = app.listen(config.port, function () {
+let app = express();
+let server = app.listen(config.port, () => {
   console.log('Listening on port %d', config.port);
 });
 
@@ -49,24 +52,24 @@ app.use(morgan('dev'));
  */
 
 mongoose.connect(config.db);
-var db = mongoose.connection;
-db.on('error', function (err) {
+let db = mongoose.connection;
+db.on('error', (err) => {
   console.error('There was a db connection error');
   return console.error(err.message);
 });
-db.once('connected', function () {
+db.once('connected', () => {
   return console.log('Successfully connected to ' + config.db);
 });
-db.once('disconnected', function () {
+db.once('disconnected', () => {
   return console.error('Successfully disconnected from ' + config.db);
 });
-process.on('SIGINT', function () {
-  mongoose.connection.close(function () {
+process.on('SIGINT', () => {
+  mongoose.connection.close(() => {
     console.error('DB connection closed due to app termination');
     return process.exit(0);
   });
 });
-var sessionStore = new mongoStore({
+let sessionStore = new mongoStore({
   mongooseConnection: db,
   touchAfter: 24 * 3600
 });
@@ -76,18 +79,18 @@ var sessionStore = new mongoStore({
  * passport
  */
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(function (id, done) {
-  User.findById(id, function (err, user) {
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
     if (err) return done(err);
     return done(null, user);
   });
 });
 
-var twitter = null;
+let twitter = null;
 passport.use(new TwitterStrategy({
     consumerKey: config.twitter.app.consumer_key,
     consumerSecret: config.twitter.app.consumer_secret,
@@ -95,8 +98,8 @@ passport.use(new TwitterStrategy({
     profileFields: ['id', 'username', 'photos'],
     passReqToCallback : true
   },
-  function (req, token, tokenSecret, profile, done) {
-    process.nextTick(function () {
+  (req, token, tokenSecret, profile, done) => {
+    process.nextTick(() => {
       twitter = new Twitter({
         consumer_key: config.twitter.app.consumer_key,
         consumer_secret: config.twitter.app.consumer_secret,
@@ -104,12 +107,12 @@ passport.use(new TwitterStrategy({
         access_token_secret: tokenSecret
       });
       if(!req.user) { // confirm that user not loggedin
-        User.findOne({ 'social.twitter.id': profile.id }, function (err, user) {
+        User.findOne({ 'social.twitter.id': profile.id }, (err, user) => {
           if (err) return done(err);
           if (user) {
             return done(null, user);
           } else {
-            var newUser = new User({
+            let newUser = new User({
               social: {
                 twitter: {
                   id: profile.id,
@@ -119,14 +122,14 @@ passport.use(new TwitterStrategy({
                 }
               }
             });
-            newUser.save(function (err) {
+            newUser.save((err) => {
               if (err) return done(err);
               return done(null, newUser);
             });
           }
         });
       } else { // user exists and is loggedin
-        var user = req.user; // pull the user out of the session
+        let user = req.user; // pull the user out of the session
         // TODO: update the current users info
         return;
       }
@@ -141,25 +144,25 @@ passport.use(new TwitterStrategy({
 
 // var twitter = new Twitter(config.twitter.app);
 
-var helpers = {
+let helpers = {
 
-  classifyURL: function (url) {
-    var result = {
+  classifyURL: (url) => {
+    let result = {
       url: url,
       type: 'article',
       is_noise: false
     };
 
-    var noiseList = ['buzztter.com', 'swarmapp.com', '4sq.com', 'instagram.com', 'amazon.co.jp'];
-    for (var domain of noiseList) {
+    const noiseList = ['buzztter.com', 'swarmapp.com', '4sq.com', 'instagram.com', 'amazon.co.jp'];
+    for (let domain of noiseList) {
       if (url.indexOf(domain) > -1) {
         result.is_noise = true;
         break;
       }
     }
 
-    var nonArticleList = ['nicovideo.jp', 'youtube.com'];
-    for (var domain of nonArticleList) {
+    const nonArticleList = ['nicovideo.jp', 'youtube.com'];
+    for (let domain of nonArticleList) {
       if (url.indexOf(domain) > -1) {
         result.type = 'movie';
         break;
@@ -169,28 +172,28 @@ var helpers = {
     return result;
   },
 
-  parseTweets: function (tweets, callback) {
-    var results = {
+  parseTweets: (tweets, callback) => {
+    let results = {
       rows: []
     };
-    var cnt = 0;
+    let cnt = 0;
 
-    async.forEach(tweets, function (tweet, cb) {
+    async.forEach(tweets, (tweet, cb) => {
       if (tweet.entities.urls.length == 0) {
         cb();
         return;
       }
 
-      var url = tweet.entities.urls[0];
+      let url = tweet.entities.urls[0];
 
       // ignore noise/non-article urls
-      var result = helpers.classifyURL(url.expanded_url);
+      let result = helpers.classifyURL(url.expanded_url);
       if (result.is_noise || result.type != 'article') {
         cb();
         return;
       }
 
-      cheerio.fetch(url.expanded_url).then(function (result) {
+      cheerio.fetch(url.expanded_url).then((result) => {
         if (result.response.statusCode != 200) return;
 
         results.rows.push({
@@ -205,49 +208,49 @@ var helpers = {
 
       }).finally(cb);
 
-    }, function (err) {
+    }, (err) => {
       callback(err, results);
     });
   },
 
 }
 
-var controllers = {
+let controllers = {
 
   base: {
-    index: function (req, res) {
+    index: (req, res) => {
       res.send('My Entries API');
     },
 
-    trend: function (req, res) {
+    trend: (req, res) => {
       if (!twitter) twitter = new Twitter(config.twitter.app);
 
-      twitter.get('trends/place', {id: 23424856, exclude: 'hashtags'}, function(error, result, response) {
+      twitter.get('trends/place', {id: 23424856, exclude: 'hashtags'}, (error, result, response) => {
         if (error) {
           console.log(error);
           res.status(500).send({ msg: 'Cannot load trend terms' });
         }
-        res.send(result[0].trends.map(function (trend) { return trend.name }));
+        res.send(result[0].trends.map((trend) => { return trend.name }));
       });
     },
 
-    classifier: function (req, res) {
+    classifier: (req, res) => {
       if (!('url' in req.query)) res.status(400).send({ msg: 'You must give `url` parameter' });
       else res.send(helpers.classifyURL(req.query.url));
     }
   },
 
   entries: {
-    all: function (req, res) {
+    all: (req, res) => {
       if (req.user) {
         twitter.get('statuses/home_timeline', {
           count: 100, exclude_replies: true
-        }, function (error, tweets, response) {
+        }, (error, tweets, response) => {
           if (error) {
             console.log(error);
             res.status(500).send({ msg: error });
           } else {
-            helpers.parseTweets(tweets, function (err, entries) {
+            helpers.parseTweets(tweets, (err, entries) => {
               res.send(entries);
             });
           }
@@ -257,7 +260,7 @@ var controllers = {
   },
 
   utils: {
-    isAuthenticated: function (req, res) {
+    isAuthenticated: (req, res) => {
       if (req.isAuthenticated()) {
         res.send({
           is_authenticated: true,
@@ -279,7 +282,7 @@ var controllers = {
  * routes
  */
 
-var isLoggedIn = function (req, res, next) {
+let isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) return next();
   return res.status(302).redirect('/');
 };

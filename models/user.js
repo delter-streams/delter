@@ -1,6 +1,8 @@
-var mongoose = require('mongoose');
+'use strict';
 
-var UserSchema = mongoose.Schema({
+import mongoose from 'mongoose';
+
+const UserSchema = mongoose.Schema({
   username: String,
   email: String,
   social: {
@@ -19,4 +21,4 @@ var UserSchema = mongoose.Schema({
   keywords: [String]
 });
 
-module.exports = mongoose.model('User', UserSchema);
+export default mongoose.model('User', UserSchema);

@@ -1,4 +1,4 @@
-config = module.exports = {
+let config = {
   name: 'delter',
   host: (process.env.HOST || 'localhost'),
   port: (process.env.PORT || 5000),
@@ -15,6 +15,7 @@ config = module.exports = {
   }
 };
 
-var callback_url = 'http://' + config.host + ':' + config.port + config.twitter.callback;
+const callback_url = 'http://' + config.host + ':' + config.port + config.twitter.callback;
 config.twitter.callback_url = callback_url;
 
+export default config;
